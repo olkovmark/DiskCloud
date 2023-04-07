@@ -2,6 +2,7 @@ import { Router } from "express";
 import User from "../models/User.js";
 import { check, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
+import c from "config";
 
 const router = new Router();
 
@@ -19,10 +20,9 @@ router.post(
       }
 
       const { email, password } = req.body;
-      await User.then((e) => {
-        console.log("e", e);
-      });
+
       const candiate = await User.findOne({ email });
+
       if (candiate) {
         return res
           .status(400)
@@ -33,8 +33,8 @@ router.post(
       await user.save();
       return res.json({ message: "User was created" });
     } catch (error) {
-      console.log("error", error);
-      res.send({ message: "Error" });
+      console.log(error);
+      res.send({ message: error });
     }
   }
 );

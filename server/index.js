@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 import config from "config";
 import express from "express";
 import autRouter from "./routes/auth.routes.js";
+import User from "./models/User.js";
 
 const app = express();
 const port = config.get("PORT");
 const monogDB = config.get("urlMongo");
-console.log("message")
 
 app.use(express.json());
 app.use("/api/auth", autRouter);
