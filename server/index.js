@@ -6,6 +6,7 @@ import autRouter from "./routes/auth.routes.js";
 const app = express();
 const port = config.get("PORT");
 const monogDB = config.get("urlMongo");
+console.log("message")
 
 app.use(express.json());
 app.use("/api/auth", autRouter);
