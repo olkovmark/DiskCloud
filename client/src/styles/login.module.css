@@ -1,0 +1,35 @@
+.page {
+  display: flex;
+  height: 100%;
+  height: 100vmin;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  padding: 20px 10px;
+  width: 350px;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  backdrop-filter: blur(20px);
+  border-radius: 10%;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.login_button {
+  margin-top: 20px;
+  height: 50px;
+  width: 100%;
+  background-color: #04c45c;
+  border-radius: 5px;
+}
+.regestraion_button {
+  margin: 10px;
+}
