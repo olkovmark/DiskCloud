@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Login } from "./pages/Login";
 import {
   createBrowserRouter,
@@ -7,9 +7,16 @@ import {
 } from "react-router-dom";
 import { Main } from "./pages/Main";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { auth } from "./actions/user";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(auth());
+  }, []);
+
   const isLogin = useSelector((prom) => prom.user.isAuth);
 
   return (

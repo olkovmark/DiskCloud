@@ -30,3 +30,23 @@ export const regestration = async (email, password) => {
     );
   }
 };
+
+export const auth = () => async (dispatch) => {
+  try {
+    const auth = `Bearer ${localStorage.getItem("token")}`;
+    console.log("Auth", auth);
+    const response = await axios.get(serverUrl + "api/auth/auth", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    console.log(response.data);
+
+    dispatch(setUser(response.data.user));
+    localStorage.setItem("token", response.data.token);
+  } catch (error) {
+    console.log(error);
+    localStorage.removeItem("token");
+  }
+};

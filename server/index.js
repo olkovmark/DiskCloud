@@ -3,6 +3,7 @@ import config from "config";
 import express from "express";
 import { router } from "./routes/auth.routes.js";
 import cors from "./middleware/cors.middleware.js";
+import authMiddleware from "./middleware/auth.middleware.js";
 
 const app = express();
 const port = config.get("PORT");

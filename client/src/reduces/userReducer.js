@@ -22,7 +22,6 @@ export default function userReducer(state = defaultState, action) {
         isAuth: false,
       };
     default:
-      console.log("default");
       return state;
   }
 }
