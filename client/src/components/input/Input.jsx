@@ -2,7 +2,6 @@ import React from "react";
 import cs from "./input.module.css";
 
 export const Input = (props) => {
-  console.log(props);
   return (
     <input
       value={props.value}
