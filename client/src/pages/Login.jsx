@@ -2,15 +2,20 @@ import React, { useState } from "react";
 import cs from "../styles/login.module.css";
 import { Input } from "../components/input/Input";
 import { login, regestration } from "../actions/user";
+import { useDispatch } from "react-redux";
 
 export const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("test@m.com");
+  const [password, setPassword] = useState("1234");
   const [isRegestration, setIsRegestration] = useState(false);
+  const dispatch = useDispatch();
+
   return (
     <div className={cs.page}>
       <div className={cs.form}>
-        <h2 className={cs.title}>Login</h2>
+        <h2 className={cs.title}>
+          {isRegestration ? "Login" : "Regestration"}
+        </h2>
         <Input
           value={email}
           setValue={setEmail}
@@ -27,7 +32,9 @@ export const Login = () => {
           <>
             <button
               className={cs.login_button}
-              onClick={() => login(email, password)}
+              onClick={() => {
+                dispatch(login(email, password));
+              }}
             >
               Login
             </button>
@@ -42,13 +49,18 @@ export const Login = () => {
           <>
             <button
               className={cs.login_button}
-              onClick={() => regestration(email, password)}
+              onClick={() => {
+                regestration(email, password);
+                formRefresh();
+              }}
             >
               Regestration
             </button>
             <button
               className={cs.regestraion_button}
-              onClick={() => setIsRegestration(false)}
+              onClick={() => {
+                setIsRegestration(false);
+              }}
             >
               login
             </button>
@@ -57,4 +69,9 @@ export const Login = () => {
       </div>
     </div>
   );
+
+  function formRefresh() {
+    setPassword("");
+    setEmail("");
+  }
 };

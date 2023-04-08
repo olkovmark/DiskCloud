@@ -1,18 +1,17 @@
 import axios from "axios";
 import { serverUrl } from "../config/config";
+import { setUser } from "../reduces/userReducer";
 
-export const login = async (email, password) => {
+export const login = (email, password) => async (dispatch) => {
   try {
     const response = await axios.post(serverUrl + "api/auth/login", {
       email,
       password,
     });
+    dispatch(setUser(response.data.user));
+    localStorage.setItem("token", response.data.token);
   } catch (error) {
-    alert(
-      error.response.data.message
-        ? error.response.data.message
-        : error.response.data.error
-    );
+    alert(error);
   }
 };
 
@@ -22,8 +21,12 @@ export const regestration = async (email, password) => {
       email,
       password,
     });
-    console.log(response.data);
+    return response.data;
   } catch (error) {
-    alert(error.response.data.message);
+    alert(
+      error.response.data.message
+        ? error.response.data.message
+        : error.response.data.error
+    );
   }
 };

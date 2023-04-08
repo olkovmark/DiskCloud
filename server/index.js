@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import config from "config";
 import express from "express";
 import { router } from "./routes/auth.routes.js";
-import User from "./models/User.js";
 import cors from "./middleware/cors.middleware.js";
 
 const app = express();

@@ -21,8 +21,12 @@ function App() {
 
 const router = createBrowserRouter([
   {
-    path: "*",
+    path: "/",
     element: <Main />,
+  },
+  {
+    path: "*",
+    element: <Navigate to="/" replace={true} />,
   },
 ]);
 const routerNoLogin = createBrowserRouter([
