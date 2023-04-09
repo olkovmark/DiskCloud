@@ -5,8 +5,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import config from "config";
 import authMiddleware from "../middleware/auth.middleware.js";
+import fileServices from "../services/fileServices.js";
+import File from "../models/File.js";
 
-export const router = new Router();
+const router = new Router();
 
 router.post(
   "/registration",
@@ -32,7 +34,10 @@ router.post(
       }
       const hashPassword = await bcrypt.hash(password, 2);
       const user = new User({ email, password: hashPassword });
+
+      const file = new File({ user: user.id, name: "" });
       await user.save();
+      await fileServices.createDir(new File({ user: user.id, name: "" }));
       return res.json({ message: "User was created" });
     } catch (error) {
       console.log(error);
@@ -92,3 +97,5 @@ router.get("/auth", authMiddleware, async (req, res) => {
     res.send({ message: error });
   }
 });
+
+export default router;

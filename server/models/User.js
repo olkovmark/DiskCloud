@@ -1,4 +1,4 @@
-import { model, ObjectId, Schema } from "mongoose";
+import { model,  Schema } from "mongoose";
 
 const User = new Schema({
   email: { type: String, require: true, unique: true },
