@@ -13,38 +13,39 @@ import { auth } from "./actions/user";
 function App() {
   const dispatch = useDispatch();
 
+  const isToken = localStorage.getItem("token");
   useEffect(() => {
-    dispatch(auth());
+    if (isToken) dispatch(auth());
+    // eslint-disable-next-line
   }, []);
 
-  const isLogin = useSelector((prom) => prom.user.isAuth);
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Main />,
+    },
+    {
+      path: "*",
+      element: <Navigate to="/" replace={true} />,
+    },
+  ]);
+  const routerNoLogin = createBrowserRouter([
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "*",
+      element: <Navigate to="/login" replace={true} />,
+    },
+  ]);
 
+  const isLogin = useSelector((prom) => prom.user.isAuth);
   return (
     <div>
-      <RouterProvider router={isLogin ? router : routerNoLogin} />
+      <RouterProvider router={isLogin || isToken ? router : routerNoLogin} />
     </div>
   );
 }
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Main />,
-  },
-  {
-    path: "*",
-    element: <Navigate to="/" replace={true} />,
-  },
-]);
-const routerNoLogin = createBrowserRouter([
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "*",
-    element: <Navigate to="/login" replace={true} />,
-  },
-]);
 
 export default App;

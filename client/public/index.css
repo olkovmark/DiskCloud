@@ -11,11 +11,11 @@
   box-sizing: border-box;
 }
 
-body {
+body,
+html {
+  background-color: antiquewhite;
+  height: 100%;
   height: fit-content;
-  background-color: #e5e5e5;
-  background-image: url("./img/cloud.avif");
-  background-position: center;
   background-repeat: no-repeat;
 
   position: relative;

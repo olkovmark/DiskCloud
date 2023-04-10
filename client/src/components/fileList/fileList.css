@@ -1,0 +1,9 @@
+.FileList {
+  height: calc(100vh-"50px");
+  padding: 0 100px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  background-color: aliceblue;
+  border-radius: 10px;
+}
+table {
+}
