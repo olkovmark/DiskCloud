@@ -2,11 +2,20 @@ import React from "react";
 import fileIcon from "../../../assets/icons/file.svg";
 import folderIcon from "../../../assets/icons/folder.svg";
 import "./file.css";
+import { useDispatch, useSelector } from "react-redux";
+import { pushToStack, setCurrentDir } from "../../../reduces/fileReducer";
 
 const File = ({ file }) => {
-  console.log(file);
+  const dispatch = useDispatch();
+  const currentDir = useSelector((state) => state.file.currentDir);
+
+  function openDir() {
+    dispatch(pushToStack(currentDir));
+    dispatch(setCurrentDir(file._id));
+  }
+
   return (
-    <tr>
+    <tr onClick={() => (file.type === "dir" ? openDir() : {})}>
       <td>
         <img
           className="fileIcon"

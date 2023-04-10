@@ -4,9 +4,10 @@
   height: 50px;
   width: 100%;
   backdrop-filter: blur(20px);
-
   padding: 0 20px;
   align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+
 }
 
 .logout {
