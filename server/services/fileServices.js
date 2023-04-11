@@ -1,5 +1,4 @@
 import fs from "fs";
-import File from "../models/File.js";
 import c from "config";
 
 class FileService {
@@ -11,7 +10,6 @@ class FileService {
           fs.mkdirSync(filePath);
           return resolve({ message: "File was Created" });
         } else {
-          console.log("reject");
           return reject({ message: "File already exit" });
         }
       } catch (e) {

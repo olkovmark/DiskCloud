@@ -4,11 +4,13 @@ import express from "express";
 import authRouter from "./routes/auth.routes.js";
 import filehRouter from "./routes/file.routes.js";
 import cors from "./middleware/cors.middleware.js";
+import fileUpload from "express-fileupload";
 
 const app = express();
 const port = config.get("PORT");
 const monogDB = config.get("urlMongo");
 
+app.use(fileUpload({}));
 app.use(cors);
 app.use(express.json());
 app.use("/api/auth", authRouter);

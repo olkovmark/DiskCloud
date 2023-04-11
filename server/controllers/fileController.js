@@ -1,6 +1,8 @@
 import File from "../models/File.js";
+import fs from "fs";
 import User from "../models/User.js";
 import fileServices from "../services/fileServices.js";
+import c from "config";
 
 class FileController {
   async createDir(req, res) {
@@ -38,6 +40,46 @@ class FileController {
       return res.json(files);
     } catch (err) {
       return res.status(500).json({ message: err });
+    }
+  }
+
+  async fileUpload(req, res) {
+    try {
+      const file = req.files.file;
+      const parent = await File.findOne({ _id: req.body.parent });
+      const user = await User.findOne({ _id: req.user.id });
+
+      if (file.size * user.usedSpace > user.diskSpace)
+        return res.status(400).json({ message: "No space in the Disk" });
+
+      let path;
+      if (parent)
+        path = `${c.get("filesPath")}/${user.id}/${parent.path}/${file.name}`;
+      else path = `${c.get("filesPath")}/${user.id}/${file.name}`;
+      console.log(path);
+
+      if (fs.existsSync(path))
+        return res.status(400).json({ message: "File already exist" });
+
+      file.mv(path);
+
+      const type = file.name.split(".").pop();
+      const dbFile = new File({
+        name: file.name,
+        type,
+        size: file.size,
+        path: parent?.path,
+        parent: parent?._id,
+        user: user._id,
+      });
+      user.usedSpace = user.usedSpace + file.size;
+      await dbFile.save();
+      await user.save();
+
+      return res.status(200).json(dbFile);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "File no upload" });
     }
   }
 }
