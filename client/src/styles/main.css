@@ -6,3 +6,8 @@
   display: flex;
   justify-content: space-between;
 }
+
+.main_content_button_files {
+  display: flex;
+  column-gap: 15px;
+}

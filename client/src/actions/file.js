@@ -39,3 +39,29 @@ export const createDir = (dirId, name) => async (dispatch) => {
     alert(error.response.data.message);
   }
 };
+export const uploadFiles = (file, dirId) => async (dispatch) => {
+  const formData = new FormData();
+  console.log(file);
+  formData.append("file", file);
+  if (dirId) formData.append("parent", dirId);
+  try {
+    const response = await axios.post(
+      serverUrl + `api/files/upload`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        onUploadProgress: (progressEvent) => {
+          console.log(progressEvent);
+          console.log(Math.round(progressEvent.progress * 100));
+        },
+      }
+    );
+
+    dispatch(addFile(response.data));
+  } catch (error) {
+    alert(error.response.data.message);
+  }
+};

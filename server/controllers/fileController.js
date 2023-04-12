@@ -49,7 +49,11 @@ class FileController {
       const parent = await File.findOne({ _id: req.body.parent });
       const user = await User.findOne({ _id: req.user.id });
 
-      if (file.size * user.usedSpace > user.diskSpace)
+      // const f = await File.deleteMany({ user: req.user.id });
+      // console.log(req);
+      // return res.status(200).json(file.name);
+
+      if (file.size + user.usedSpace > user.diskSpace)
         return res.status(400).json({ message: "No space in the Disk" });
 
       let path;

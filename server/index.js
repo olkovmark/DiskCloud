@@ -10,7 +10,7 @@ const app = express();
 const port = config.get("PORT");
 const monogDB = config.get("urlMongo");
 
-app.use(fileUpload({}));
+app.use(fileUpload({ defCharset: "utf8", defParamCharset: "utf8" }));
 app.use(cors);
 app.use(express.json());
 app.use("/api/auth", authRouter);

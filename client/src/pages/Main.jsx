@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "../components/header/Header";
 import { useDispatch, useSelector } from "react-redux";
-import { getFiles } from "../actions/file";
+import { getFiles, uploadFiles } from "../actions/file";
 import FileList from "../components/fileList/FileList";
 import "../styles/main.css";
 import Button from "react-bootstrap/Button";
 import { createDir } from "../actions/file";
 import { CreateDIrModal } from "../components/modals/CreateDIrModal";
 import { backDir, setCurrentDir } from "../reduces/fileReducer";
+import Form from "react-bootstrap/Form";
 
 export const Main = () => {
   const dispatch = useDispatch();
@@ -30,13 +31,43 @@ export const Main = () => {
     dispatch(getFiles(currentDir));
     // eslint-disable-next-line
   }, [currentDir]);
+
+  const inputRef = useRef();
+
+  const handleUploadClick = () => {
+    inputRef.current?.click();
+  };
+
+  const handleFileChange = (e) => {
+    const files = [...e.target.files];
+    if (!e.target.files) {
+      return;
+    }
+
+    files.forEach((file) => {
+      dispatch(uploadFiles(file, currentDir));
+    });
+  };
+
   return (
     <div>
       <Header />
       <div className="main_content">
         <div className="main_content_button">
           <Button onClick={() => back()}>Back</Button>
-          <Button onClick={() => setIsCreateDir(true)}>Create Folder</Button>
+          <div className="main_content_button_files">
+            <div>
+              <Button onClick={handleUploadClick}>Add File</Button>
+              <input
+                multiple
+                type="file"
+                ref={inputRef}
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+            </div>
+            <Button onClick={() => setIsCreateDir(true)}>Create Folder</Button>
+          </div>
         </div>
         <FileList />
       </div>

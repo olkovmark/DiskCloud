@@ -19,7 +19,7 @@ const File = ({ file }) => {
       <td>
         <img
           className="fileIcon"
-          src={file.dir === "dir" ? fileIcon : folderIcon}
+          src={file.type === "dir" ? folderIcon : fileIcon}
           alt=""
         />
       </td>
