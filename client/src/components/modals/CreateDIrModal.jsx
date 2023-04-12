@@ -33,7 +33,6 @@ export const CreateDIrModal = ({ isShow, setShow, createDir, ...props }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      ;
     </div>
   );
 };
