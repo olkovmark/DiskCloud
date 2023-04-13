@@ -1,9 +1,9 @@
 const SET_FILES = "SET_FILES";
 const SET_CURRENT_DIR = "SET_CURRENT_DIR";
 const ADD_FILE = "ADD_FILE";
+const DELETE_FILE = "DELETE_FILE";
 const PUSH_TO_STACK = "PUSH_TO_STACK";
 const BACK = "BACK";
-
 
 const defaultState = {
   files: [],
@@ -27,6 +27,13 @@ export default function fileReducer(state = defaultState, action) {
       return {
         ...state,
         files: [...state.files, action.payload],
+      };
+    case DELETE_FILE:
+      return {
+        ...state,
+        files: [...state.files].filter(
+          (file) => file._id !== action.payload._id
+        ),
       };
     case PUSH_TO_STACK:
       return {
@@ -54,6 +61,10 @@ export const setCurrentDir = (currentDir) => {
 
 export const addFile = (file) => ({
   type: ADD_FILE,
+  payload: file,
+});
+export const deleteFile = (file) => ({
+  type: DELETE_FILE,
   payload: file,
 });
 

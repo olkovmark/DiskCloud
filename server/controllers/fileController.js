@@ -58,7 +58,6 @@ class FileController {
         path = `${c.get("filesPath")}/${user.id}/${parent.path}/${file.name}`;
       else path = `${c.get("filesPath")}/${user.id}/${file.name}`;
 
-
       if (fs.existsSync(path))
         return res.status(400).json({ message: "File already exist" });
 
@@ -99,6 +98,31 @@ class FileController {
       return res.status(500).json({ message: "Download error" });
     } catch (error) {
       res.status(500).json({ message: "Download errors" });
+    }
+  }
+
+  async deleteFile(req, res) {
+    try {
+      const file = await File.findOne({ _id: req.query.id, user: req.user.id });
+      if (!file)
+        return res.status(500).json({ message: "File in base not Found" });
+
+      const path = `${c.get("filesPath")}/${req.user.id}${
+        file.path ? "/" + file.path : ""
+      }/${file.name}`;
+
+      if (fs.existsSync(path)) {
+        fs.unlink(path, () => {});
+        const r = await File.deleteOne({
+          _id: req.query.id,
+          user: req.user.id,
+        });
+        return res.status(200).json(r);
+      }
+
+      return res.status(500).json({ message: "Delete error" });
+    } catch (error) {
+      res.status(500).json({ message: "Delete errors" });
     }
   }
 }

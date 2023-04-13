@@ -34,6 +34,7 @@ const FileList = ({ currentDir, ...props }) => {
               <th width={"70%"}>Name</th>
               <th>Date</th>
               <th>Size</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>{files}</tbody>

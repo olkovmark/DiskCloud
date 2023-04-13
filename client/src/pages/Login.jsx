@@ -14,7 +14,7 @@ export const Login = () => {
     <div className={cs.page}>
       <div className={cs.form}>
         <h2 className={cs.title}>
-          {isRegestration ? "Login" : "Regestration"}
+          {!isRegestration ? "Login" : "Regestration"}
         </h2>
         <Input
           value={email}
