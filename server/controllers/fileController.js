@@ -57,7 +57,7 @@ class FileController {
       if (parent)
         path = `${c.get("filesPath")}/${user.id}/${parent.path}/${file.name}`;
       else path = `${c.get("filesPath")}/${user.id}/${file.name}`;
-      console.log(path);
+
 
       if (fs.existsSync(path))
         return res.status(400).json({ message: "File already exist" });

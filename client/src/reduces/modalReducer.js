@@ -1,17 +1,25 @@
 const DOWNLOAD = "DOWNLOAD";
 
 const stateDefault = {
-  isDownload: false,
+  downloadModal: {
+    isShow: false,
+    file: null,
+  },
 };
 
 export default function modalReducer(state = stateDefault, action) {
   switch (action.type) {
     case DOWNLOAD:
-      return { ...state, isDownload: !state.isDownload };
-
+      return {
+        ...state,
+        downloadModal: {
+          isShow: !state.downloadModal.isShow,
+          file: action.payload,
+        },
+      };
     default:
       return state;
   }
 }
 
-export const changeIsDownload = () => ({ type: DOWNLOAD });
+export const changeIsDownload = (file) => ({ type: DOWNLOAD, payload: file });

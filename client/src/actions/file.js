@@ -41,7 +41,7 @@ export const createDir = (dirId, name) => async (dispatch) => {
 };
 export const uploadFiles = (file, dirId) => async (dispatch) => {
   const formData = new FormData();
-  console.log(file);
+
   formData.append("file", file);
   if (dirId) formData.append("parent", dirId);
   try {
@@ -49,12 +49,8 @@ export const uploadFiles = (file, dirId) => async (dispatch) => {
       serverUrl + `api/files/upload`,
       formData,
       {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         onUploadProgress: (progressEvent) => {
-          console.log(progressEvent);
           console.log(Math.round(progressEvent.progress * 100));
         },
       }
@@ -63,5 +59,28 @@ export const uploadFiles = (file, dirId) => async (dispatch) => {
     dispatch(addFile(response.data));
   } catch (error) {
     alert(error.response.data.message);
+  }
+};
+
+export const downloadFile = async (file) => {
+  try {
+    const response = await axios.get(
+      serverUrl + `api/files/download/?id=${file._id}`,
+      {
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.status === 200) {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(response.data);
+      link.download = file.name;
+      link.click();
+      link.remove();
+    }
+  } catch (error) {
+    alert(error);
   }
 };

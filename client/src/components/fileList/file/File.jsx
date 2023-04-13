@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import fileIcon from "../../../assets/icons/file.svg";
 import folderIcon from "../../../assets/icons/folder.svg";
 import "./file.css";
@@ -13,7 +13,7 @@ const File = ({ file }) => {
   return (
     <tr
       onClick={() =>
-        file.type === "dir" ? openDir() : dispatch(changeIsDownload())
+        file.type === "dir" ? openDir() : dispatch(changeIsDownload(file))
       }
     >
       <td>
