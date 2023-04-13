@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Header from "../components/header/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { getFiles, uploadFiles } from "../actions/file";
@@ -9,6 +9,8 @@ import { createDir } from "../actions/file";
 import { CreateDIrModal } from "../components/modals/CreateDIrModal";
 import { backDir, setCurrentDir } from "../reduces/fileReducer";
 import { UploadArea } from "../components/uploadArea/UploadArea";
+import { DownloadFileModal } from "../components/modals/DownloadFileModal";
+import { changeIsDownload } from "../reduces/modalReducer";
 
 export const Main = () => {
   const dispatch = useDispatch();
@@ -16,28 +18,27 @@ export const Main = () => {
 
   const currentDir = useSelector((state) => state.file.currentDir);
   const dirStack = useSelector((state) => state.file.dirStack);
+  const isDownloadModal = useSelector((state) => state.modal.isDownload);
+  const [modalDownloadShow, setModalDownloadShow] = useState(false);
 
-  function back() {
-    dispatch(setCurrentDir([...dirStack].pop()));
-    dispatch(backDir());
-  }
-
-  function createDirHandler(dirName) {
-    dispatch(createDir(currentDir, dirName));
-    setIsCreateDir(false);
-  }
+  useMemo(() => {
+    console.log("donloadMOadl");
+    console.log(isDownloadModal);
+  }, [isDownloadModal]);
 
   useEffect(() => {
     dispatch(getFiles(currentDir));
     // eslint-disable-next-line
   }, [currentDir]);
 
-  const inputRef = useRef();
+  function isDownloadModalHandler() {
+    dispatch(changeIsDownload());
+  }
 
+  const inputRef = useRef();
   const handleUploadClick = () => {
     inputRef.current?.click();
   };
-
   const handleFileChange = (e) => {
     const files = [...e.target.files];
     if (!e.target.files) {
@@ -50,26 +51,6 @@ export const Main = () => {
   };
 
   const [isDrag, setIsDrag] = useState(false);
-
-  function dragOnEnterHandler(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    setIsDrag(true);
-  }
-  function dragOnEndHandler(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    setIsDrag(false);
-  }
-  function dropOnHandler(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    setIsDrag(false);
-
-    [...event.dataTransfer.files].forEach((file) =>
-      dispatch(uploadFiles(file, currentDir))
-    );
-  }
 
   return (
     <>
@@ -101,6 +82,10 @@ export const Main = () => {
           setShow={setIsCreateDir}
           createDir={createDirHandler}
         />
+        <DownloadFileModal
+          show={isDownloadModal}
+          close={isDownloadModalHandler}
+        />
       </div>
       {isDrag && (
         <UploadArea
@@ -112,4 +97,34 @@ export const Main = () => {
       )}
     </>
   );
+
+  function back() {
+    dispatch(setCurrentDir([...dirStack].pop()));
+    dispatch(backDir());
+  }
+
+  function createDirHandler(dirName) {
+    dispatch(createDir(currentDir, dirName));
+    setIsCreateDir(false);
+  }
+
+  function dragOnEnterHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDrag(true);
+  }
+  function dragOnEndHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDrag(false);
+  }
+  function dropOnHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDrag(false);
+
+    [...event.dataTransfer.files].forEach((file) =>
+      dispatch(uploadFiles(file, currentDir))
+    );
+  }
 };

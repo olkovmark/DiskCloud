@@ -4,6 +4,7 @@ const ADD_FILE = "ADD_FILE";
 const PUSH_TO_STACK = "PUSH_TO_STACK";
 const BACK = "BACK";
 
+
 const defaultState = {
   files: [],
   currentDir: null,

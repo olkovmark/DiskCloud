@@ -3,6 +3,7 @@ import fs from "fs";
 import User from "../models/User.js";
 import fileServices from "../services/fileServices.js";
 import c from "config";
+import { ok } from "assert";
 
 class FileController {
   async createDir(req, res) {
@@ -49,10 +50,6 @@ class FileController {
       const parent = await File.findOne({ _id: req.body.parent });
       const user = await User.findOne({ _id: req.user.id });
 
-      // const f = await File.deleteMany({ user: req.user.id });
-      // console.log(req);
-      // return res.status(200).json(file.name);
-
       if (file.size + user.usedSpace > user.diskSpace)
         return res.status(400).json({ message: "No space in the Disk" });
 
@@ -84,6 +81,24 @@ class FileController {
     } catch (error) {
       console.log(error);
       return res.status(500).json({ message: "File no upload" });
+    }
+  }
+
+  async downloadFile(req, res) {
+    try {
+      const file = await File.findOne({ _id: req.query.id, user: req.user.id });
+      if (!file)
+        return res.status(500).json({ message: "File in base not Found" });
+
+      const path = `${c.get("filesPath")}/${req.user.id}/${file.path}/${
+        file.type === "dir" ? "" : file.name
+      }`;
+
+      if (fs.existsSync(path)) return res.download(path, file.name);
+
+      return res.status(500).json({ message: "Download error" });
+    } catch (error) {
+      res.status(500).json({ message: "Download errors" });
     }
   }
 }
