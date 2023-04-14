@@ -41,6 +41,8 @@ export const createDir = (dirId, name) => async (dispatch) => {
   }
 };
 export const uploadFiles = (file, dirId) => async (dispatch) => {
+
+
   const formData = new FormData();
 
   formData.append("file", file);
@@ -51,15 +53,13 @@ export const uploadFiles = (file, dirId) => async (dispatch) => {
       formData,
       {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        onUploadProgress: (progressEvent) => {
-          console.log(Math.round(progressEvent.progress * 100));
-        },
       }
     );
 
     dispatch(addFile(response.data));
   } catch (error) {
-    alert(error.response.data.message);
+    console.log(error);
+    // alert(error);
   }
 };
 

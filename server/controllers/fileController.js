@@ -45,6 +45,8 @@ class FileController {
   }
 
   async fileUpload(req, res) {
+    console.log("--------");
+    console.log(req.files.file);
     try {
       const file = req.files.file;
       const parent = await File.findOne({ _id: req.body.parent });
@@ -55,8 +57,8 @@ class FileController {
 
       let path;
       if (parent)
-        path = `${c.get("filesPath")}/${user.id}/${parent.path}/${file.name}`;
-      else path = `${c.get("filesPath")}/${user.id}/${file.name}`;
+        path = `${c.get("filesPath")}${user.id}/${parent.path}/${file.name}`;
+      else path = `${c.get("filesPath")}${user.id}/${file.name}`;
 
       if (fs.existsSync(path))
         return res.status(400).json({ message: "File already exist" });
@@ -73,6 +75,11 @@ class FileController {
         user: user._id,
       });
       user.usedSpace = user.usedSpace + file.size;
+      if (parent) {
+        parent.childs.push(dbFile._id);
+        await parent.save();
+      }
+
       await dbFile.save();
       await user.save();
 
@@ -89,7 +96,7 @@ class FileController {
       if (!file)
         return res.status(500).json({ message: "File in base not Found" });
 
-      const path = `${c.get("filesPath")}/${req.user.id}/${file.path}/${
+      const path = `${c.get("filesPath")}${req.user.id}/${file.path}/${
         file.type === "dir" ? "" : file.name
       }`;
 
@@ -102,28 +109,61 @@ class FileController {
   }
 
   async deleteFile(req, res) {
+    const file = await File.findOne({ _id: req.query.id, user: req.user.id });
+    const stack = [file._id];
+
+    stack.push();
+
+    const childs = await findChilds(file, stack);
+    console.log("!!!!!!!");
+    // console.log("final", stack);
+
     try {
       const file = await File.findOne({ _id: req.query.id, user: req.user.id });
       if (!file)
         return res.status(500).json({ message: "File in base not Found" });
 
-      const path = `${c.get("filesPath")}/${req.user.id}${
-        file.path ? "/" + file.path : ""
-      }/${file.name}`;
+      const path =
+        c.get("filesPath") +
+        req.user.id +
+        (file.path ? "/" + file.path : "") +
+        (file.type !== "dir" ? "/" + file.name : "");
 
       if (fs.existsSync(path)) {
-        fs.unlink(path, () => {});
+        if (file.type === "dir") {
+          const t = await File.deleteMany({
+            _id: stack,
+            user: req.user.id,
+          });
+          console.log(t);
+
+          fs.rmdirSync(path, { recursive: true, force: true });
+
+          return res.status(200).json();
+        }
+
+        fs.unlinkSync(path);
         const r = await File.deleteOne({
           _id: req.query.id,
           user: req.user.id,
         });
+
         return res.status(200).json(r);
       }
 
       return res.status(500).json({ message: "Delete error" });
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: "Delete errors" });
     }
   }
 }
 export default new FileController();
+
+async function findChilds(file, stackId) {
+  for (const item of file.childs) {
+    stackId.push(item);
+    const t = await File.findOne({ _id: item });
+    if (t?.childs.length > 0) await findChilds(t, stackId);
+  }
+}
